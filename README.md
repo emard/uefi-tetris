@@ -1,5 +1,7 @@
 # UEFI-Tetris 
 Tetris game for UEFI, based on [bare-metal-tetris](https://github.com/programble/bare-metal-tetris) 
+This fork allows clockwise and counter-clockwise rotation
+(original allowed only clockwise).
 
 ## Screenshot 
 
