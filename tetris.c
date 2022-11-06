@@ -611,6 +611,20 @@ static bool rotate(void)
     return true;
 }
 
+/* Try to rotate the current tetrimino counter-clockwise and return true if successful.
+ */
+static bool rotate_ccw(void)
+{
+    if (game_over)
+        return false;
+
+    uint8_t r = (current.r + 3) % 4;
+    if (collide(current.i, r, current.x, current.y))
+        return false;
+    current.r = r;
+    return true;
+}
+
 /* Try to move the current tetrimino down one and increase the score if
  * successful. */
 static void soft_drop(void)
@@ -929,15 +943,17 @@ loop:
     }
 
     if (help) {
-        _puts(1, 12, GRAY,   BLACK, "LEFT");
-        _puts(7, 12, BLUE,   BLACK, "- Move left");
-        _puts(1, 13, GRAY,   BLACK, "RIGHT");
-        _puts(7, 13, BLUE,   BLACK, "- Move right");
+        _puts(1, 11, GRAY,   BLACK, "LEFT");
+        _puts(7, 11, BLUE,   BLACK, "- Move left");
+        _puts(1, 12, GRAY,   BLACK, "RIGHT");
+        _puts(7, 12, BLUE,   BLACK, "- Move right");
+        _puts(1, 13, GRAY,   BLACK, "DOWN");
+        _puts(7, 13, BLUE,   BLACK, "- Rotate CW");
         _puts(1, 14, GRAY,   BLACK, "UP");
-        _puts(7, 14, BLUE,   BLACK, "- Rotate clockwise");
-        _puts(1, 15, GRAY,   BLACK, "DOWN");
+        _puts(7, 14, BLUE,   BLACK, "- Rotate CCW");
+        _puts(1, 15, GRAY,   BLACK, "ENTER");
         _puts(7, 15, BLUE,   BLACK, "- Soft drop");
-        _puts(1, 16, GRAY,   BLACK, "ENTER");
+        _puts(1, 16, GRAY,   BLACK, "SPACE");
         _puts(7, 16, BLUE,   BLACK, "- Hard drop");
         _puts(1, 17, GRAY,   BLACK, "P");
         _puts(7, 17, BLUE,   BLACK, "- Pause");
@@ -997,14 +1013,16 @@ loop:
             move(1, 0);
             break;
         case KEY_DOWN:
-            soft_drop();
-            break;
-        case KEY_UP:
-        case KEY_SPACE:
             rotate();
             break;
-        case KEY_ENTER:
+        case KEY_UP:
+            rotate_ccw();
+            break;
+        case KEY_SPACE:
             drop();
+            break;
+        case KEY_ENTER:
+            soft_drop();
             break;
         case KEY_P:
             if (game_over)
