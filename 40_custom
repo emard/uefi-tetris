@@ -1,0 +1,38 @@
+#!/bin/sh
+exec tail -n +3 $0
+# This file provides an easy way to add custom menu entries.  Simply type the
+# menu entries you want to add after this comment.  Be careful not to change
+# the 'exec tail' line above.
+
+# this file should be in /etc/grub.d/40_custom
+# to apply on next boot, run as root:
+# update-grub
+
+menuentry 'UEFI Shell' {
+  # UEFI Shell:
+  # https://github.com/pbatard/UEFI-Shell
+  # loop mount ISO file and locate bootx64.efi file
+  # mount -o loop uefishell.iso /mnt
+  # mkdir -p /boot/efi/EFI/shell/
+  # cp /mnt/bootx64.efi /boot/efi/EFI/shell/
+  insmod part_gpt
+  insmod fat
+  set root='hd2,gpt1'
+  chainloader ($root)/EFI/shell/bootx64.efi
+}
+
+menuentry 'Tetris' {
+  # git clone https://github.com/emard/uefi-tetris
+  # cp tetris.efi /boot/efi/EFI/tetris/
+  # to complie from source:
+  # apt-get gnu-efi
+  # make
+  # to run from uefi shell:
+  # fs1:
+  # cd EFI/tetris
+  # tetris.efi
+  insmod part_gpt
+  insmod fat
+  set root='hd2,gpt1'
+  chainloader ($root)/EFI/tetris/tetris.efi
+}
